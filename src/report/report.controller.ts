@@ -8,24 +8,30 @@ import {
 } from '@nestjs/common';
 import { ReportGuard } from './report.guard';
 import { ReportService } from './report.service';
-import { ReportGateway } from './report.gateway';
 
 @Controller('report')
 export class ReportController {
-  constructor(
-    private readonly reportService: ReportService,
-    private readonly reportGateway: ReportGateway,
-  ) {}
+  constructor(private readonly reportService: ReportService) {}
 
   @Get(':org/:repo')
   @Render('report')
   getReport(@Param() params): void {
-    return;
+    const repoUrl = `https://github.com/${params.org}/${params.repo}`;
+
+    this.reportService.startReport(repoUrl);
+  }
+
+  @Get(':org/:repo/raw')
+  @Render('report')
+  getRawReport(@Param() params): void {
+    // get raw report from mongo
+
+    const repoUrl = `https://github.com/${params.org}/${params.repo}`;
   }
 
   @Post()
   @UseGuards(ReportGuard)
-  postReport(): any {
-    return;
+  postReport(): void {
+    // add report to mongo and make it look nice in json
   }
 }
